@@ -273,7 +273,7 @@ jobs:
           UPSTREAM_VERSION="${MAJOR}.${MINOR}.${MAINT}.${BASE_COUNT}"
 
           {
-            echo "ReGameDLL_CS fork build \`${APP_VERSION}\` (commit \`${GITHUB_SHA}\`)."
+            echo "YaGameDLL_CS — Yet Another GameDLL, a ReGameDLL_CS fork. Build \`${APP_VERSION}\` (commit \`${GITHUB_SHA}\`)."
             echo
             echo "Upstream base: [rehlds/ReGameDLL_CS](https://github.com/rehlds/ReGameDLL_CS) \`${UPSTREAM_VERSION}\` — commit $(git log -1 --format='`%h` %s (%ad)' --date=short $BASE)."
             echo
@@ -290,6 +290,6 @@ jobs:
           gh release create latest regamedll-*.zip \
             -R ${{ github.repository }} \
             --target ${{ github.sha }} \
-            --title "ReGameDLL_CS ${APP_VERSION}" \
+            --title "YaGameDLL_CS ${APP_VERSION}" \
             --notes-file changelog.md \
             --latest
