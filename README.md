@@ -1,10 +1,10 @@
-# YaGameDLL_CS [![GitHub release (by tag)](https://img.shields.io/github/downloads/belomaxorka/ReGameDLL_CS/latest/total)](https://github.com/belomaxorka/ReGameDLL_CS/releases/latest) ![GitHub all releases](https://img.shields.io/github/downloads/belomaxorka/ReGameDLL_CS/total) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://www.gnu.org/licenses/gpl-3.0) <img align="right" src="https://cloud.githubusercontent.com/assets/5860435/20008568/b3623150-a2d3-11e6-85f3-0d6571045fc9.png" alt="Counter-Strike 1.6 GameDLL" />
+# YaGameDLL [![GitHub release (by tag)](https://img.shields.io/github/downloads/belomaxorka/YaGameDLL/latest/total)](https://github.com/belomaxorka/YaGameDLL/releases/latest) ![GitHub all releases](https://img.shields.io/github/downloads/belomaxorka/YaGameDLL/total) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://www.gnu.org/licenses/gpl-3.0) <img align="right" src="https://cloud.githubusercontent.com/assets/5860435/20008568/b3623150-a2d3-11e6-85f3-0d6571045fc9.png" alt="Counter-Strike 1.6 GameDLL" />
 Yet Another GameDLL — reverse-engineered gamedll (mp.dll / Counter-Strike), a fork of [rehlds/ReGameDLL_CS](https://github.com/rehlds/ReGameDLL_CS)
 
 ## What is this?
 ReGameDLL_CS is a result of reverse engineering of original library mod HLDS (build 6153beta) using DWARF debug info embedded into linux version of HLDS, cs.so
 
-YaGameDLL_CS is a fork that tracks upstream and ships fixes/features ahead of it. Versions read `<upstream base>+yagd.<N>`: the base is the exact upstream version the build sits on, `N` is the number of fork commits on top (see [FORK.md](./FORK.md) on the `release` branch for details).
+YaGameDLL is a fork that tracks upstream and ships fixes/features ahead of it. Versions read `<upstream base>+yagd.<N>`: the base is the exact upstream version the build sits on, `N` is the number of fork commits on top (see [FORK.md](./FORK.md) on the `release` branch for details).
 
 ## Goals of the project
 * Provide more stable (than official) version of Counter-Strike game with extended API for mods and plugins
@@ -22,8 +22,8 @@ ReGameDLL_CS is licensed under the [MIT License](./LICENSE).
 ReGameDLL_CS is fully compatible with official mod CS 1.6 / CZero by Valve. All you have to do is to download binaries and replace original mp.dll/cs.so
 
 ## Downloads
-* [Release builds](https://github.com/belomaxorka/ReGameDLL_CS/releases)
-* [Dev builds](https://github.com/belomaxorka/ReGameDLL_CS/actions/workflows/dev-build.yml)
+* [Release builds](https://github.com/belomaxorka/YaGameDLL/releases)
+* [Dev builds](https://github.com/belomaxorka/YaGameDLL/actions/workflows/dev-build.yml)
 * [Upstream release builds](https://github.com/rehlds/ReGameDLL_CS/releases)
 
 <b>Warning!</b> ReGameDLL_CS is not binary compatible with original hlds since it's compiled with compilers other than ones used for original mod CS.
@@ -155,11 +155,11 @@ This means that plugins that do binary code analysis (Orpheu for example) probab
 </details>
 
 ## How to install zBot for CS 1.6?
-* Extract all the files from an [archive](regamedll/extra/zBot/bot_profiles.zip?raw=true)
+* Extract all the files from an [archive](https://github.com/belomaxorka/YaGameDLL/raw/release/regamedll/extra/zBot/bot_profiles.zip)
 * Enable CVar `bot_enable 1` in `cstrike/game_init.cfg` (if this config file does not exist, create it)
 
 ## How to install CS:CZ hostage AI for CS 1.6?
-* Extract all the files from an [archive](regamedll/extra/HostageImprov/host_improv.zip?raw=true)
+* Extract all the files from an [archive](https://github.com/belomaxorka/YaGameDLL/raw/release/regamedll/extra/HostageImprov/host_improv.zip)
 * Enable CVar `hostage_ai_enable 1` in `cstrike/game_init.cfg` (if this config file does not exist, create it)
 
 ## Build instructions
