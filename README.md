@@ -1,8 +1,10 @@
-# ReGameDLL_CS [![GitHub release (by tag)](https://img.shields.io/github/downloads/rehlds/ReGameDLL_CS/latest/total)](https://github.com/rehlds/ReGameDLL_CS/releases/latest) ![GitHub all releases](https://img.shields.io/github/downloads/rehlds/ReGameDLL_CS/total) [![Percentage of issues still open](http://isitmaintained.com/badge/open/rehlds/ReGameDLL_CS.svg)](http://isitmaintained.com/project/rehlds/ReGameDLL_CS "Percentage of issues still open") [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://www.gnu.org/licenses/gpl-3.0) <img align="right" src="https://cloud.githubusercontent.com/assets/5860435/20008568/b3623150-a2d3-11e6-85f3-0d6571045fc9.png" alt="Counter-Strike 1.6 GameDLL" />
-Reverse-engineered gamedll (mp.dll / Counter-Strike)
+# YaGameDLL_CS [![GitHub release (by tag)](https://img.shields.io/github/downloads/belomaxorka/ReGameDLL_CS/latest/total)](https://github.com/belomaxorka/ReGameDLL_CS/releases/latest) ![GitHub all releases](https://img.shields.io/github/downloads/belomaxorka/ReGameDLL_CS/total) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://www.gnu.org/licenses/gpl-3.0) <img align="right" src="https://cloud.githubusercontent.com/assets/5860435/20008568/b3623150-a2d3-11e6-85f3-0d6571045fc9.png" alt="Counter-Strike 1.6 GameDLL" />
+Yet Another GameDLL — reverse-engineered gamedll (mp.dll / Counter-Strike), a fork of [rehlds/ReGameDLL_CS](https://github.com/rehlds/ReGameDLL_CS)
 
 ## What is this?
 ReGameDLL_CS is a result of reverse engineering of original library mod HLDS (build 6153beta) using DWARF debug info embedded into linux version of HLDS, cs.so
+
+YaGameDLL_CS is a fork that tracks upstream and ships fixes/features ahead of it. Versions read `<upstream base>+yagd.<N>`: the base is the exact upstream version the build sits on, `N` is the number of fork commits on top (see [FORK.md](./FORK.md) on the `release` branch for details).
 
 ## Goals of the project
 * Provide more stable (than official) version of Counter-Strike game with extended API for mods and plugins
@@ -20,8 +22,9 @@ ReGameDLL_CS is licensed under the [MIT License](./LICENSE).
 ReGameDLL_CS is fully compatible with official mod CS 1.6 / CZero by Valve. All you have to do is to download binaries and replace original mp.dll/cs.so
 
 ## Downloads
-* [Release builds](https://github.com/rehlds/ReGameDLL_CS/releases)
-* [Dev builds](https://github.com/rehlds/ReGameDLL_CS/actions/workflows/build.yml)
+* [Release builds](https://github.com/belomaxorka/ReGameDLL_CS/releases)
+* [Dev builds](https://github.com/belomaxorka/ReGameDLL_CS/actions/workflows/dev-build.yml)
+* [Upstream release builds](https://github.com/rehlds/ReGameDLL_CS/releases)
 
 <b>Warning!</b> ReGameDLL_CS is not binary compatible with original hlds since it's compiled with compilers other than ones used for original mod CS.
 This means that plugins that do binary code analysis (Orpheu for example) probably will not work with ReGameDLL_CS.
