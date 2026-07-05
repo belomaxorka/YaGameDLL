@@ -115,9 +115,9 @@ IF NOT %errlvl% == "1" (
 )
 
 ::
-:: Fork versioning: keep the upstream-equivalent commit count as the base
-:: and expose the number of fork commits on top of master separately,
-:: so the version reads as "<upstream base>-dev+fork.<N>"
+:: Fork versioning (yagd = Yet Another GameDLL): keep the upstream-equivalent
+:: commit count as the base and expose the number of fork commits on top of
+:: master separately, so the version reads as "<upstream base>-dev+yagd.<N>"
 ::
 set mergeBase=
 set baseCount=
@@ -145,7 +145,7 @@ IF NOT %errlvl% == "1" (
 
 IF NOT [%forkCount%] == [0] IF NOT [%baseCount%] == [] (
 	set commitCount=%baseCount%
-	set version_fork=+fork.%forkCount%
+	set version_fork=+yagd.%forkCount%
 )
 
 ::

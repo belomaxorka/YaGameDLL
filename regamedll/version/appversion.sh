@@ -51,9 +51,9 @@ init()
 	fi
 
 	#
-	# Fork versioning: keep the upstream-equivalent commit count as the base
-	# and expose the number of fork commits on top of master separately,
-	# so the version reads as "<upstream base>-dev+fork.<N>"
+	# Fork versioning (yagd = Yet Another GameDLL): keep the upstream-equivalent
+	# commit count as the base and expose the number of fork commits on top of
+	# master separately, so the version reads as "<upstream base>-dev+yagd.<N>"
 	#
 	FORK_SUFFIX=
 	MERGE_BASE=$(git -C "$GIT_DIR/" merge-base origin/master HEAD 2>/dev/null)
@@ -64,7 +64,7 @@ init()
 		FORK_COUNT=$(git -C "$GIT_DIR/" rev-list --count "$MERGE_BASE..HEAD" 2>/dev/null)
 		if [ -n "$FORK_COUNT" ] && [ "$FORK_COUNT" != "0" ]; then
 			COMMIT_COUNT=$(git -C "$GIT_DIR/" rev-list --count "$MERGE_BASE")
-			FORK_SUFFIX="+fork.$FORK_COUNT"
+			FORK_SUFFIX="+yagd.$FORK_COUNT"
 		fi
 	fi
 
