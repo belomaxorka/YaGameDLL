@@ -57,4 +57,10 @@ CLAUDE.md
 - `fix/sharedparse-bounds` — переполнение буфера в SharedParse() (PR #1165)
 - `feat/hint-messages-cvar` — `mp_show_hintmessages` (PR #1166)
 
+Release-only коммиты (не из тематических веток; при пересборке сохранять черри-пиком,
+как служебные файлы):
+- `docs: fix cvar defaults and document mp_chat_loc_fallback` — баги доков апстрима
+  (sv_allchat=0, ff_damage_reduction_other=0.25, добавлен mp_chat_loc_fallback).
+  Позже можно оформить отдельным PR в rehlds.
+
 Отложено: stuck-фикс заложников — патч `hostage_stuck_fix.patch` на рабочем столе.
