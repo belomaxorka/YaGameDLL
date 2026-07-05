@@ -115,6 +115,40 @@ IF NOT %errlvl% == "1" (
 )
 
 ::
+:: Fork versioning: keep the upstream-equivalent commit count as the base
+:: and expose the number of fork commits on top of master separately,
+:: so the version reads as "<upstream base>-dev+fork.<N>"
+::
+set mergeBase=
+set baseCount=
+set forkCount=0
+set version_fork=
+
+IF NOT %errlvl% == "1" (
+	FOR /F "tokens=*" %%i IN ('"git -C "%repodir%\." merge-base origin/master HEAD 2>NUL"') DO (
+		set mergeBase=%%i
+	)
+	IF [!mergeBase!] == [] (
+		FOR /F "tokens=*" %%i IN ('"git -C "%repodir%\." merge-base master HEAD 2>NUL"') DO (
+			set mergeBase=%%i
+		)
+	)
+	IF NOT [!mergeBase!] == [] (
+		FOR /F "tokens=*" %%i IN ('"git -C "%repodir%\." rev-list --count !mergeBase!"') DO (
+			set baseCount=%%i
+		)
+		FOR /F "tokens=*" %%i IN ('"git -C "%repodir%\." rev-list --count !mergeBase!..HEAD"') DO (
+			set forkCount=%%i
+		)
+	)
+)
+
+IF NOT [%forkCount%] == [0] IF NOT [%baseCount%] == [] (
+	set commitCount=%baseCount%
+	set version_fork=+fork.%forkCount%
+)
+
+::
 :: Get remote url repository
 ::
 IF NOT %errlvl% == "1" (
@@ -187,7 +221,7 @@ IF [%localChanged%]==[1] (
 :: Now form full version string like 1.0.0.1
 ::
 
-set new_version=%version_major%.%version_minor%.%version_maintenance%.%commitCount%-dev%version_modifed%
+set new_version=%version_major%.%version_minor%.%version_maintenance%.%commitCount%-dev%version_fork%%version_modifed%
 
 ::
 :: Update appversion.h if version has changed or modifications/mixed revisions detected

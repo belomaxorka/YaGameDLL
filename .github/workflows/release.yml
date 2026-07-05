@@ -241,7 +241,7 @@ jobs:
 
       - name: Reading appversion.h
         run: |
-          APP_VERSION=$(grep -wi '#define APP_VERSION_STRD' linux32/appversion.h | sed -e 's/#define APP_VERSION_STRD[ \t\r\n\v\f]\+\(.*\)/\1/i' -e 's/\r//g' | xargs)
+          APP_VERSION=$(grep -wi '#define APP_VERSION' linux32/appversion.h | head -n1 | sed -e 's/#define APP_VERSION[ \t\r\n\v\f]\+"\(.*\)"/\1/i' -e 's/\r//g' | xargs)
           if [ -z "$APP_VERSION" ]; then
             APP_VERSION="unknown"
           fi
@@ -262,12 +262,22 @@ jobs:
         run: |
           cd src
           BASE=$(git merge-base origin/master HEAD)
+
+          # Upstream-equivalent version of the base commit: rehlds numbers its
+          # builds as MAJOR.MINOR.MAINTENANCE.<commit count>, reproduce it here
+          VERSION_FILE=regamedll/version/version.h
+          MAJOR=$(grep -wi 'VERSION_MAJOR' $VERSION_FILE | grep -o '[0-9]\+' | head -n1)
+          MINOR=$(grep -wi 'VERSION_MINOR' $VERSION_FILE | grep -o '[0-9]\+' | head -n1)
+          MAINT=$(grep -wi 'VERSION_MAINTENANCE' $VERSION_FILE | grep -o '[0-9]\+' | head -n1)
+          BASE_COUNT=$(git rev-list --count $BASE)
+          UPSTREAM_VERSION="${MAJOR}.${MINOR}.${MAINT}.${BASE_COUNT}"
+
           {
-            echo "ReGameDLL_CS \`${APP_VERSION}\` fork build (commit \`${GITHUB_SHA}\`)."
+            echo "ReGameDLL_CS fork build \`${APP_VERSION}\` (commit \`${GITHUB_SHA}\`)."
             echo
-            echo "Based on upstream master at $(git log -1 --format='`%h` %s (%ad)' --date=short $BASE)."
+            echo "Upstream base: [rehlds/ReGameDLL_CS](https://github.com/rehlds/ReGameDLL_CS) \`${UPSTREAM_VERSION}\` — commit $(git log -1 --format='`%h` %s (%ad)' --date=short $BASE)."
             echo
-            echo "### Changes on top of upstream"
+            echo "### Fork changes on top of upstream"
             git log --no-merges --pretty='- `%h` %s' origin/master..HEAD
           } > ../changelog.md
           cat ../changelog.md
