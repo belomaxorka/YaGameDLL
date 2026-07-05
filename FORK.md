@@ -56,6 +56,8 @@ CLAUDE.md
 - `feat/show-bomb-timer` — `mp_show_bomb_timer` (PR #1164)
 - `fix/sharedparse-bounds` — переполнение буфера в SharedParse() (PR #1165)
 - `feat/hint-messages-cvar` — `mp_show_hintmessages` (PR #1166)
+- `fix/knife-hit-detection` — `mp_knife_hit_detection`, регистрация ударов ножа
+  по прицелу (issue #1154; PR в rehlds пока не открыт)
 
 Release-only коммиты (не из тематических веток; при пересборке сохранять черри-пиком,
 как служебные файлы):
