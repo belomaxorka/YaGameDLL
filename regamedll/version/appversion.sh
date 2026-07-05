@@ -126,7 +126,13 @@ init()
 		MODIFIED=+m
 	fi
 
-	NEW_VERSION="$MAJOR.$MINOR.$MAINTENANCE.$COMMIT_COUNT-dev$FORK_SUFFIX$MODIFIED"
+	# Tagged CI builds are releases: drop the -dev mark
+	DEV_TAG="-dev"
+	if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+		DEV_TAG=
+	fi
+
+	NEW_VERSION="$MAJOR.$MINOR.$MAINTENANCE.$COMMIT_COUNT$DEV_TAG$FORK_SUFFIX$MODIFIED"
 
 	# Update appversion.h if version has changed or modifications/mixed revisions detected
 	if [ "$NEW_VERSION" != "$OLD_VERSION" ]; then
