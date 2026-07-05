@@ -254,7 +254,7 @@ jobs:
           rsync -a linux32/dist/ pack/bin/win32/cstrike/
           rsync -a linux32/dist/ pack/bin/linux32/cstrike/
           cd pack
-          7z a -tzip ../regamedll-${APP_VERSION}.zip bin/ cssdk/
+          7z a -tzip ../yagamedll-${APP_VERSION}.zip bin/ cssdk/
 
       - name: Generate changelog
         env:
@@ -284,7 +284,7 @@ jobs:
           fi
 
           {
-            echo "YaGameDLL_CS — Yet Another GameDLL, a ReGameDLL_CS fork. Build \`${APP_VERSION}\` (commit \`${GITHUB_SHA}\`)."
+            echo "YaGameDLL — Yet Another GameDLL, a ReGameDLL_CS fork. Build \`${APP_VERSION}\` (commit \`${GITHUB_SHA}\`)."
             echo
             echo "Upstream base: [rehlds/ReGameDLL_CS](https://github.com/rehlds/ReGameDLL_CS) \`${UPSTREAM_VERSION}\` — commit $(git log -1 --format='`%h` %s (%ad)' --date=short $BASE)."
             if [ -n "$UPSTREAM_DIFF" ]; then
@@ -301,8 +301,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ github.ref_name }}" regamedll-*.zip \
+          gh release create "${{ github.ref_name }}" yagamedll-*.zip \
             -R ${{ github.repository }} \
-            --title "YaGameDLL_CS ${APP_VERSION}" \
+            --title "YaGameDLL ${APP_VERSION}" \
             --notes-file changelog.md \
             --latest

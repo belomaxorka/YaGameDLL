@@ -1,6 +1,7 @@
-# belomaxorka/ReGameDLL_CS fork
+# belomaxorka/YaGameDLL (ReGameDLL_CS fork)
 
 Upstream: https://github.com/rehlds/ReGameDLL_CS (merges PRs with squash).
+The repo was renamed from ReGameDLL_CS — old URLs redirect.
 
 ```
 master   — mirror of rehlds/master, own commits are forbidden
@@ -9,11 +10,14 @@ feat/...
 release  — master + cherry-picks of the topic branches (my build); linear history, force-pushed
 ```
 
+`release` is the default branch of the repo (front page, new clones, PRs into
+the fork). PRs to rehlds are unaffected — their base is always rehlds/master.
+
 Service files (FORK.md, .github/workflows/release.yml) live only on release.
 
 ## Versioning
 
-The fork build is named YaGameDLL_CS (Yet Another GameDLL); the version
+The fork build is named YaGameDLL (Yet Another GameDLL); the version
 suffix is `yagd`.
 
 Upstream numbers its builds as `MAJOR.MINOR.MAINT.<commit count>`; on release
@@ -34,7 +38,7 @@ builds keep it (`5.30.0.814-dev+yagd.17`) — the scripts check
 the version matches upstream exactly (no suffix). The release changelog states
 the upstream base on a separate line (version + commit + date) and links the
 upstream diff since the previous release; the zip name and the release title
-(`YaGameDLL_CS <version>`) carry the full fork version.
+(`YaGameDLL <version>`) carry the full fork version.
 
 ## Cutting a release
 
@@ -84,6 +88,10 @@ git rebase master release && git push -f origin release
 
 If `--ff-only` fails, own commits leaked into master; move them out to a branch.
 
+NEVER use the "Sync fork" button in the GitHub UI on the release branch — for
+a diverged branch it offers to discard our commits. Sync only via the commands
+above.
+
 ## After rehlds accepts a PR
 
 ```bash
@@ -106,7 +114,7 @@ on mirror pushes of master; disable it once:
 
 ```powershell
 Invoke-RestMethod -Method Put -Headers @{Authorization="token <PAT>"} `
-  -Uri "https://api.github.com/repos/belomaxorka/ReGameDLL_CS/actions/workflows/build.yml/disable"
+  -Uri "https://api.github.com/repos/belomaxorka/YaGameDLL/actions/workflows/build.yml/disable"
 ```
 
 ## Local ignore (`.git/info/exclude`, restore after a re-clone)
@@ -135,7 +143,7 @@ when rebuilding the branch, like the service files):
 - `ci: fork-aware versioning` + follow-ups — appversion.sh / PreBuild.bat /
   release.yml / dev-build.yml patches (see Versioning / Cutting a release).
   Fork-specific, never goes to rehlds.
-- `docs: fork README` — YaGameDLL_CS header, badges and Downloads links point
-  to this fork. Fork-specific, never goes to rehlds.
+- `docs: fork README` (+ follow-ups) — YaGameDLL header, badges, Downloads and
+  archive links point to this fork. Fork-specific, never goes to rehlds.
 
 Deferred: hostage stuck fix — `hostage_stuck_fix.patch` on the Desktop.
