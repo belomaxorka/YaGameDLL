@@ -48,7 +48,9 @@ build + tests + artifacts, no publication).
 
 1. Make sure `release` is pushed, in the desired state, and its Dev Build is
    green.
-2. Find out the version: build locally and take it from the PreBuild output
+2. Add an entry for the new version to the fork section at the top of
+   CHANGELOG.md (Added / Fixed / Infrastructure; state the upstream base).
+3. Find out the version: build locally and take it from the PreBuild output
    (`Updating appversion.h, new version is "5.30.0.814-dev+yagd.17"`) or from
    `game_version`. The tag mirrors it as `v<base>-yagd.<N>` (drop `-dev`,
    `+` is replaced with `-` — awkward in tag names):
@@ -58,7 +60,7 @@ build + tests + artifacts, no publication).
    git push origin v5.30.0.814-yagd.17
    ```
 
-3. CI builds Win/Linux, runs unit tests and test demos, then publishes a
+4. CI builds Win/Linux, runs unit tests and test demos, then publishes a
    release for the tag (marked Latest): zip with mp.dll/cs.so/configs and a
    changelog. The tagged build carries no `-dev` in the version. The changelog
    contains the upstream base (version + commit + date), a compare link with
@@ -145,5 +147,8 @@ when rebuilding the branch, like the service files):
   Fork-specific, never goes to rehlds.
 - `docs: fork README` (+ follow-ups) — YaGameDLL header, badges, Downloads and
   archive links point to this fork. Fork-specific, never goes to rehlds.
+- `docs: fork changelog` — fork releases section on top of CHANGELOG.md
+  (upstream history kept below); updated on every release (see Cutting a
+  release). Fork-specific, never goes to rehlds.
 
 Deferred: hostage stuck fix — `hostage_stuck_fix.patch` on the Desktop.
