@@ -136,6 +136,8 @@ CLAUDE.md
 - `feat/hint-messages-cvar` — `mp_show_hintmessages` (PR #1166)
 - `fix/knife-hit-detection` — `mp_knife_hit_detection`, aim-based knife hit
   registration (issue #1154; PR to rehlds not opened yet)
+- `feat/hostage-fear-cvar` — `mp_hostage_fear`, keep CZ improved-AI hostages
+  calm under gunfire (issue #1125; PR to rehlds not opened yet)
 
 Release-only commits (not from topic branches; preserve them via cherry-pick
 when rebuilding the branch, like the service files):
