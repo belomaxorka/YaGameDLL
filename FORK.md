@@ -127,30 +127,21 @@ dep/cppunitlite/msvc/cppunitlite/
 CLAUDE.md
 ```
 
-## Release branch composition
+## Inspecting the release branch
 
-- `fix/hostage-ai-stale-nav-on-mapchange` — CZ hostages freeze after a map change (PR #1162)
-- `feat/knife-wall-sparks` — `mp_knife_wall_sparks` (PR #1163)
-- `feat/show-bomb-timer` — `mp_show_bomb_timer` (PR #1164)
-- `fix/sharedparse-bounds` — buffer overflow in SharedParse() (PR #1165)
-- `feat/hint-messages-cvar` — `mp_show_hintmessages` (PR #1166)
-- `fix/knife-hit-detection` — `mp_knife_hit_detection`, aim-based knife hit
-  registration (issue #1154; PR to rehlds not opened yet)
-- `feat/hostage-fear-cvar` — `mp_hostage_fear`, keep CZ improved-AI hostages
-  calm under gunfire (issue #1125; PR to rehlds not opened yet)
+Do not keep a manual list of cherry-picked branches in this file — the
+actual composition is always:
 
-Release-only commits (not from topic branches; preserve them via cherry-pick
-when rebuilding the branch, like the service files):
-- `docs: fix cvar defaults and document mp_chat_loc_fallback` — upstream doc
-  bugs (sv_allchat=0, ff_damage_reduction_other=0.25, added
-  mp_chat_loc_fallback). Could later become a separate PR to rehlds.
-- `ci: fork-aware versioning` + follow-ups — appversion.sh / PreBuild.bat /
-  release.yml / dev-build.yml patches (see Versioning / Cutting a release).
-  Fork-specific, never goes to rehlds.
-- `docs: fork README` (+ follow-ups) — YaGameDLL header, badges, Downloads and
-  archive links point to this fork. Fork-specific, never goes to rehlds.
-- `docs: fork changelog` — fork releases section on top of CHANGELOG.md
-  (upstream history kept below); updated on every release (see Cutting a
-  release). Fork-specific, never goes to rehlds.
+```bash
+git log --oneline master..release
+```
 
-Deferred: hostage stuck fix — `hostage_stuck_fix.patch` on the Desktop.
+Conventions that make that log self-describing:
+
+- Topic-branch cherry-picks keep their original commit messages; the branch
+  and PR they came from are recorded in the commit body / GitHub.
+- Release-only commits are prefixed `docs:` / `ci:` and never go to rehlds
+  (generic doc fixes may later be re-done as a separate PR from master).
+  A regular rebase onto master carries them along automatically; when
+  rebuilding the branch from scratch, cherry-pick them like the service
+  files.
