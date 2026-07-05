@@ -139,8 +139,8 @@ jobs:
       - name: Install dependencies
         run: |
           dpkg --add-architecture i386
-          apt-get update
-          apt-get install -y \
+          apt-get update -o Acquire::Retries=3
+          apt-get install -y -o Acquire::Retries=3 \
             gcc-multilib g++-multilib \
             build-essential \
             libc6-dev libc6-dev-i386 \
