@@ -5,8 +5,6 @@ on:
     tags:
       - 'v*'
 
-  workflow_dispatch:
-
 permissions:
   contents: write
 
@@ -259,9 +257,12 @@ jobs:
           7z a -tzip ../regamedll-${APP_VERSION}.zip bin/ cssdk/
 
       - name: Generate changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           cd src
           BASE=$(git merge-base origin/master HEAD)
+          BASE_SHORT=$(git rev-parse --short $BASE)
 
           # Upstream-equivalent version of the base commit: rehlds numbers its
           # builds as MAJOR.MINOR.MAINTENANCE.<commit count>, reproduce it here
@@ -272,12 +273,26 @@ jobs:
           BASE_COUNT=$(git rev-list --count $BASE)
           UPSTREAM_VERSION="${MAJOR}.${MINOR}.${MAINT}.${BASE_COUNT}"
 
+          # Link to the upstream diff since the previous release (its base
+          # commit is parsed from the "Upstream base:" line of its notes)
+          UPSTREAM_DIFF=
+          PREV_JSON=$(gh api "repos/${{ github.repository }}/releases?per_page=1" 2>/dev/null || echo '[]')
+          PREV_TAG=$(echo "$PREV_JSON" | jq -r '.[0].tag_name // empty')
+          PREV_BASE=$(echo "$PREV_JSON" | jq -r '.[0].body // empty' | sed -n 's/.*Upstream base:.*commit `\([0-9a-f]*\)`.*/\1/p' | head -n1)
+          if [ -n "$PREV_BASE" ] && [ "$PREV_BASE" != "$BASE_SHORT" ]; then
+            UPSTREAM_DIFF="Upstream changes since \`${PREV_TAG}\`: https://github.com/rehlds/ReGameDLL_CS/compare/${PREV_BASE}...${BASE_SHORT}"
+          fi
+
           {
             echo "YaGameDLL_CS — Yet Another GameDLL, a ReGameDLL_CS fork. Build \`${APP_VERSION}\` (commit \`${GITHUB_SHA}\`)."
             echo
             echo "Upstream base: [rehlds/ReGameDLL_CS](https://github.com/rehlds/ReGameDLL_CS) \`${UPSTREAM_VERSION}\` — commit $(git log -1 --format='`%h` %s (%ad)' --date=short $BASE)."
+            if [ -n "$UPSTREAM_DIFF" ]; then
+              echo
+              echo "$UPSTREAM_DIFF"
+            fi
             echo
-            echo "### Fork changes on top of upstream"
+            echo "### Changelog"
             git log --no-merges --pretty='- `%h` %s' origin/master..HEAD
           } > ../changelog.md
           cat ../changelog.md

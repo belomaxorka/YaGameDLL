@@ -1,0 +1,155 @@
+name: Dev Build
+
+on:
+  push:
+    branches: [release]
+    paths-ignore:
+      - '**.md'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: 'Windows'
+    runs-on: windows-2025
+
+    env:
+      solution: 'msvc/ReGameDLL.sln'
+      buildPlatform: 'Win32'
+      buildRelease: 'Release'
+      buildReleasePlay: 'Release Play'
+      buildTests: 'Tests'
+      toolset: 'v143'
+
+    steps:
+      - name: Configure
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build and Run unittests
+        run: |
+          msbuild ${{ env.solution }} -p:Configuration="${{ env.buildTests }}" /t:Clean,Build /p:Platform=${{ env.buildPlatform }} /p:PlatformToolset=${{ env.toolset }} /p:XPDeprecationWarning=false
+          .\"msvc\Tests\mp.exe"
+          If ($LASTEXITCODE -ne 0 -And
+          $LASTEXITCODE -ne 3)
+          {[Environment]::Exit(1)}
+        shell: "pwsh"
+
+      - name: Build
+        run: |
+          msbuild ${{ env.solution }} -p:Configuration="${{ env.buildRelease }}" /t:Clean,Build /p:Platform=${{ env.buildPlatform }} /p:PlatformToolset=${{ env.toolset }} /p:XPDeprecationWarning=false
+          msbuild ${{ env.solution }} -p:Configuration="${{ env.buildReleasePlay }}" /t:Clean,Build /p:Platform=${{ env.buildPlatform }} /p:PlatformToolset=${{ env.toolset }} /p:XPDeprecationWarning=false
+
+      - name: Move files
+        run: |
+          mkdir publish\debug
+          mkdir publish\tests
+          mkdir publish\bin\win32\cstrike\dlls
+          move "msvc\${{ env.buildReleasePlay }}\mp.dll" publish\tests\mp.dll
+          move msvc\${{ env.buildRelease }}\mp.dll publish\bin\win32\cstrike\dlls\mp.dll
+          move msvc\${{ env.buildRelease }}\mp.pdb publish\debug\mp.pdb
+
+      - name: Deploy artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: win32
+          path: publish/*
+
+  testdemos:
+    name: 'Test demos'
+    runs-on: ubuntu-latest
+    container: rehldsorg/testdemos:latest
+    needs: [windows]
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: /opt/HLDS
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test: [
+          { file: 'cstrike-basic-1',    desc: 'CS: Testing jumping, scenarios, shooting etc' },
+        ]
+
+    steps:
+      - name: Deploying windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: win32
+
+      - name: Setup dependencies
+        run: |
+          chown root ~
+          rsync -a deps/regamedll/* .
+          mv $GITHUB_WORKSPACE/tests/mp.dll cstrike/dlls/mp.dll
+
+      - name: Play test
+        env:
+          demo: ${{ matrix.test.file }}
+          desc: ${{ matrix.test.desc }}
+        run: ./runTest.sh
+
+  linux:
+    name: 'Linux'
+    runs-on: ubuntu-latest
+    container: debian:11-slim
+
+    steps:
+      - name: Install dependencies
+        run: |
+          dpkg --add-architecture i386
+          apt-get update
+          apt-get install -y \
+            gcc-multilib g++-multilib \
+            build-essential \
+            libc6-dev libc6-dev-i386 \
+            git cmake rsync \
+            g++ gcc
+
+      - name: Configure
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Build using GCC Compiler
+        run: |
+          rm -rf build && CC=gcc CXX=g++ cmake -B build && cmake --build build -j8
+
+      - name: Move files
+        run: |
+          mkdir -p publish/bin/linux32/cstrike/dlls
+          mv build/regamedll/cs.so publish/bin/linux32/cstrike/dlls/cs.so 2>/dev/null || true
+          mv regamedll/version/appversion.h publish/appversion.h
+
+      - name: Run GLIBC/ABI version compat test
+        run: |
+          binaries=(
+            "publish/bin/linux32/cstrike/dlls/cs.so"
+          )
+          bash ./regamedll/version/glibc_test.sh ${binaries[@]}
+          if [[ $? -ne 0 ]]; then
+            exit 1 # Assertion failed
+          fi
+        shell: bash
+
+      - name: Deploy artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux32
+          path: publish/*

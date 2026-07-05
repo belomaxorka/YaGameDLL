@@ -221,7 +221,11 @@ IF [%localChanged%]==[1] (
 :: Now form full version string like 1.0.0.1
 ::
 
-set new_version=%version_major%.%version_minor%.%version_maintenance%.%commitCount%-dev%version_fork%%version_modifed%
+:: Tagged CI builds are releases: drop the -dev mark
+set version_dev=-dev
+IF "%GITHUB_REF_TYPE%" == "tag" set version_dev=
+
+set new_version=%version_major%.%version_minor%.%version_maintenance%.%commitCount%%version_dev%%version_fork%%version_modifed%
 
 ::
 :: Update appversion.h if version has changed or modifications/mixed revisions detected
