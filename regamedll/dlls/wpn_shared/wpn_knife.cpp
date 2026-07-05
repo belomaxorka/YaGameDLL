@@ -190,6 +190,16 @@ bool IsKnifeHitWithinAimCone(CBaseEntity *pHit, const Vector &vecSrc, const Vect
 	return DotProduct(vecToTarget.Normalize(), vecAim) > 0.5f; // cos(60)
 }
 
+// A hull-assisted trace reports the impact on the target's expanded box, up to a half
+// hull away from the body; pull it back onto the target's hull so impact effects
+// (blood) don't spawn in mid-air
+void ClampKnifeImpactPoint(CBaseEntity *pHit, TraceResult &tr)
+{
+	tr.vecEndPos.x = Q_clamp(tr.vecEndPos.x, pHit->pev->absmin.x, pHit->pev->absmax.x);
+	tr.vecEndPos.y = Q_clamp(tr.vecEndPos.y, pHit->pev->absmin.y, pHit->pev->absmax.y);
+	tr.vecEndPos.z = Q_clamp(tr.vecEndPos.z, pHit->pev->absmin.z, pHit->pev->absmax.z);
+}
+
 // The regular knife trace starts at eye level, so its reach (distance + hull padding)
 // cannot cover a target right below the attacker (e.g. when standing on their head)
 // even at point-blank range. Retrace from the body center to cover that case.
@@ -215,7 +225,10 @@ void KnifeTraceFromBody(CBasePlayer *pPlayer, float flDistance, TraceResult &tr)
 		// override the regular trace verdict
 		CBaseEntity *pHit = CBaseEntity::Instance(trBody.pHit);
 		if (pHit && !pHit->IsBSPModel() && IsKnifeHitWithinAimCone(pHit, vecSrc, gpGlobals->v_forward))
+		{
+			ClampKnifeImpactPoint(pHit, trBody);
 			tr = trBody;
+		}
 	}
 }
 #endif
@@ -357,10 +370,17 @@ BOOL CKnife::Swing(BOOL fFirst)
 				FindHullIntersection(vecSrc, tr, VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, m_pPlayer->edict());
 			}
 #ifdef REGAMEDLL_ADD
-			else if (((int)knife_hit_detection.value & 1) && !IsKnifeHitWithinAimCone(pHit, vecSrc, gpGlobals->v_forward))
+			else if ((int)knife_hit_detection.value & 1)
 			{
-				// the hull caught an entity too far off the crosshair, treat as miss
-				tr.flFraction = 1.0f;
+				if (!IsKnifeHitWithinAimCone(pHit, vecSrc, gpGlobals->v_forward))
+				{
+					// the hull caught an entity too far off the crosshair, treat as miss
+					tr.flFraction = 1.0f;
+				}
+				else
+				{
+					ClampKnifeImpactPoint(pHit, tr);
+				}
 			}
 #endif
 
@@ -567,10 +587,17 @@ BOOL CKnife::Stab(BOOL fFirst)
 				FindHullIntersection(vecSrc, tr, VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, m_pPlayer->edict());
 			}
 #ifdef REGAMEDLL_ADD
-			else if (((int)knife_hit_detection.value & 1) && !IsKnifeHitWithinAimCone(pHit, vecSrc, gpGlobals->v_forward))
+			else if ((int)knife_hit_detection.value & 1)
 			{
-				// the hull caught an entity too far off the crosshair, treat as miss
-				tr.flFraction = 1.0f;
+				if (!IsKnifeHitWithinAimCone(pHit, vecSrc, gpGlobals->v_forward))
+				{
+					// the hull caught an entity too far off the crosshair, treat as miss
+					tr.flFraction = 1.0f;
+				}
+				else
+				{
+					ClampKnifeImpactPoint(pHit, tr);
+				}
 			}
 #endif
 
