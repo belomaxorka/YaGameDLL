@@ -296,7 +296,10 @@ jobs:
             CHERRY="--cherry-pick --right-only"
             FULL_DIFF="**Full changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${{ github.ref_name }}"
           fi
-          CHANGELOG=$(git log --no-merges $CHERRY --pretty='- %s [`%h`](https://github.com/${{ github.repository }}/commit/%H)' $RANGE)
+          # Housekeeping commits are hidden: ones touching only docs/CI files
+          # (pathspec) plus ci:/docs:/chore:-prefixed ones that reach other
+          # files (version scripts, configs)
+          CHANGELOG=$(git log --no-merges $CHERRY --pretty='- %s [`%h`](https://github.com/${{ github.repository }}/commit/%H)' $RANGE -- ':(exclude)*.md' ':(exclude).github' | grep -viE '^- (ci|docs|chore|build)[:+]' || true)
 
           {
             echo "YaGameDLL — Yet Another GameDLL, a ReGameDLL_CS fork. Build \`${APP_VERSION}\` (commit [\`${GITHUB_SHA::7}\`](https://github.com/${{ github.repository }}/commit/${GITHUB_SHA}))."
@@ -313,7 +316,7 @@ jobs:
             if [ -n "$CHANGELOG" ]; then
               echo "$CHANGELOG"
             else
-              echo "_No fork-side changes since \`${PREV_TAG}\`._"
+              echo "_No code changes since \`${PREV_TAG}\` (docs/CI only)._"
             fi
             if [ -n "$FULL_DIFF" ]; then
               echo
