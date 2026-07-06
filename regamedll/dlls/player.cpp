@@ -222,6 +222,33 @@ bool EXT_FUNC CBasePlayer::__API_HOOK(SetClientUserInfoName)(char *infobuffer, c
 	}
 #endif
 
+#ifdef REGAMEDLL_ADD
+	CCSPlayer *pCSPlayer = CSPlayer();
+
+	// With the limit disabled (< 0) behave exactly like vanilla
+	bool bLimitEnabled = int(max_alive_name_changes.value) >= 0;
+
+	// A pending name released for application on respawn (see CBasePlayer::Spawn)
+	// re-enters here through the engine (deferred callback or the client resending
+	// its userinfo). Let that specific name through as-is while the player is alive;
+	// anything else while dead or over the alive-change limit is deferred until the
+	// next respawn (anti-spam).
+	bool bApplyDeferred = pev->deadflag == DEAD_NO && pCSPlayer->m_bApplyingDeferredName && FStrEq(szNewName, m_szNewName);
+
+	if (!bApplyDeferred && (pev->deadflag != DEAD_NO || !pCSPlayer->CanChangeNickname()))
+	{
+		// Notify only when the target name actually changes, so repeated userinfo
+		// updates for the same pending name don't spam the chat every respawn;
+		// with the limit disabled vanilla prints every time, keep that
+		if (!bLimitEnabled || !m_bHasChangedName || !FStrEq(m_szNewName, szNewName))
+			ClientPrint(pev, HUD_PRINTTALK, "#Name_change_at_respawn");
+
+		m_bHasChangedName = true;
+		Q_snprintf(m_szNewName, sizeof(m_szNewName), "%s", szNewName);
+		pCSPlayer->m_bApplyingDeferredName = false;
+		return false;
+	}
+#else
 	if (pev->deadflag != DEAD_NO)
 	{
 		m_bHasChangedName = true;
@@ -229,9 +256,17 @@ bool EXT_FUNC CBasePlayer::__API_HOOK(SetClientUserInfoName)(char *infobuffer, c
 		ClientPrint(pev, HUD_PRINTTALK, "#Name_change_at_respawn");
 		return false;
 	}
+#endif
 
 	// Set the name
 	SET_CLIENT_KEY_VALUE(nClientIndex, infobuffer, "name", szNewName);
+
+#ifdef REGAMEDLL_ADD
+	if (bApplyDeferred)
+		pCSPlayer->m_bApplyingDeferredName = false; // deferred name applied, stop bypassing
+	else
+		pCSPlayer->OnNicknameChanged();             // count a genuine alive change
+#endif
 
 	MESSAGE_BEGIN(MSG_BROADCAST, gmsgSayText);
 		WRITE_BYTE(nClientIndex);
@@ -6089,11 +6124,26 @@ void EXT_FUNC CBasePlayer::__API_HOOK(Spawn)()
 
 		if (!FStrEq(m_szNewName, GET_KEY_VALUE(infobuffer, "name")))
 		{
+#ifdef REGAMEDLL_ADD
+			// Release the pending name for application. The resulting userinfo update
+			// re-enters SetClientUserInfoName (possibly on a later frame), where this
+			// flag lets it bypass the alive-change limit. Kept set until it applies;
+			// m_szNewName is preserved so that replay can be matched.
+			if (int(max_alive_name_changes.value) >= 0)
+				CSPlayer()->m_bApplyingDeferredName = true;
+#endif
 			SET_CLIENT_KEY_VALUE(entindex(), infobuffer, "name", m_szNewName);
 		}
 
 		m_bHasChangedName = false;
+#ifdef REGAMEDLL_ADD
+		// Keep m_szNewName while the limit is enabled so that the deferred replay
+		// can be matched in SetClientUserInfoName; otherwise clear it as vanilla does
+		if (int(max_alive_name_changes.value) < 0)
+			m_szNewName[0] = '\0';
+#else
 		m_szNewName[0] = '\0';
+#endif
 	}
 
 	UTIL_ScreenFade(this, Vector(0, 0, 0), 0.001);

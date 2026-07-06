@@ -57,7 +57,9 @@ public:
 		m_flLongJumpForce(0),
 		m_flDuckSpeedMultiplier(0),
 		m_iUserID(-1),
-		m_iGibDamageThreshold(GIB_PLAYER_THRESHOLD)
+		m_iGibDamageThreshold(GIB_PLAYER_THRESHOLD),
+		m_iNickChangesBeforeSpawn(0),
+		m_bApplyingDeferredName(false)
 	{
 		m_szModel[0] = '\0';
 
@@ -130,6 +132,9 @@ public:
 	void OnKilled();
 	void OnConnect();
 
+	bool CanChangeNickname() const;
+	void OnNicknameChanged();
+
 	CBasePlayer *BasePlayer() const;
 
 public:
@@ -191,6 +196,9 @@ public:
 
 	// Player movement version control
 	PlayerMovementVersion m_MovementVersion;
+
+	int m_iNickChangesBeforeSpawn; // number of name changes made while alive since last spawn (mp_max_alive_name_changes)
+	bool m_bApplyingDeferredName;  // guard: a deferred name is being replayed on respawn, bypass the alive-change limit
 };
 
 // Inlines
