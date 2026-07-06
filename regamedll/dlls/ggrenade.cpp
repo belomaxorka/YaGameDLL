@@ -33,7 +33,9 @@ LINK_HOOK_CLASS_VOID_CUSTOM2_CHAIN(CGrenade, ExplodeFlashbang, Explode, (TraceRe
 // UNDONE: temporary scorching for PreAlpha - find a less sleazy permenant solution.
 void CGrenade::__API_HOOK(Explode)(TraceResult *pTrace, int bitsDamageType)
 {
+#ifndef REGAMEDLL_FIXES
 	float flRndSound; // sound randomizer
+#endif
 
 	pev->model = iStringNull; // invisible
 	pev->solid = SOLID_NOT;   // intangible
@@ -98,7 +100,9 @@ LINK_HOOK_CLASS_VOID_CUSTOM2_CHAIN(CGrenade, ExplodeBomb, Explode2, (TraceResult
 
 void CGrenade::__API_HOOK(Explode2)(TraceResult *pTrace, int bitsDamageType)
 {
+#ifndef REGAMEDLL_FIXES
 	float flRndSound; // sound randomizer
+#endif
 
 	pev->model = iStringNull; // invisible
 	pev->solid = SOLID_NOT;   // intangible
@@ -246,7 +250,9 @@ LINK_HOOK_CLASS_VOID_CUSTOM2_CHAIN(CGrenade, ExplodeHeGrenade, Explode3, (TraceR
 
 void CGrenade::__API_HOOK(Explode3)(TraceResult *pTrace, int bitsDamageType)
 {
+#ifndef REGAMEDLL_FIXES
 	float flRndSound; // sound randomizer
+#endif
 
 	pev->model = iStringNull; // invisible
 	pev->solid = SOLID_NOT;   // intangible
