@@ -4,7 +4,7 @@ Yet Another GameDLL — reverse-engineered gamedll (mp.dll / Counter-Strike), a 
 ## What is this?
 ReGameDLL_CS is a result of reverse engineering of original library mod HLDS (build 6153beta) using DWARF debug info embedded into linux version of HLDS, cs.so
 
-YaGameDLL is a fork that tracks upstream and ships fixes/features ahead of it. Versions read `<upstream base>+yagd.<N>`: the base is the exact upstream version the build sits on, `N` is the number of fork commits on top (see [FORK.md](./FORK.md) on the `release` branch for details).
+YaGameDLL is a fork that tracks upstream and ships fixes/features ahead of it. Versions read `<upstream base>+yagd.<N>`: the base is the exact upstream version the build sits on, `N` is the number of fork commits on top.
 
 ## Goals of the project
 * Provide more stable (than official) version of Counter-Strike game with extended API for mods and plugins

@@ -1,7 +1,7 @@
 # [YaGameDLL](https://github.com/belomaxorka/YaGameDLL) Changelog
 
 Yet Another GameDLL — a [rehlds/ReGameDLL_CS](https://github.com/rehlds/ReGameDLL_CS) fork.
-Versions read `<upstream base>+yagd.<N>` (see [FORK.md](./FORK.md)); binaries are on the
+Versions read `<upstream base>+yagd.<N>`; binaries are on the
 [releases page](https://github.com/belomaxorka/YaGameDLL/releases). Upstream history is
 kept below in the original ReGameDLL_CS section.
 
