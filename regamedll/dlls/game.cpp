@@ -194,6 +194,7 @@ cvar_t flymove_method          = { "mp_flymove_method", "0", 0, 0.0f, nullptr };
 cvar_t stamina_restore_rate    = { "mp_stamina_restore_rate", "0", 0, 0.f, nullptr };
 
 cvar_t logkills                = { "mp_logkills", "1", FCVAR_SERVER, 0.0f, nullptr };
+cvar_t max_alive_name_changes  = { "mp_max_alive_name_changes", "-1", FCVAR_SERVER, 0.0f, nullptr };  // number of name changes allowed while alive per life; -1 unlimited, 0 spawn-only
 cvar_t randomspawn             = { "mp_randomspawn", "0", FCVAR_SERVER, 0.0f, nullptr };
 
 cvar_t playerid_showhealth     = { "mp_playerid_showhealth", "1", 0, 1.0f, nullptr };
@@ -479,6 +480,7 @@ void EXT_FUNC GameDLLInit()
 	CVAR_REGISTER(&cv_bot_enable);
 	CVAR_REGISTER(&cv_hostage_ai_enable);
 	CVAR_REGISTER(&logkills);
+	CVAR_REGISTER(&max_alive_name_changes);
 
 	CVAR_REGISTER(&playerid_showhealth);
 	CVAR_REGISTER(&playerid_field);
