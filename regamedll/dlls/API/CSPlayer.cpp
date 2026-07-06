@@ -580,6 +580,12 @@ void CCSPlayer::OnSpawn()
 	m_bGameForcingRespawn = false;
 	m_flRespawnPending = 0.0f;
 	m_DamageList.Clear();
+
+	// A fresh life grants a new budget of name changes; the pending-name release
+	// flag is cleared here and re-armed by Spawn() only if a name is still pending
+	// and the limit is enabled
+	m_iNickChangesBeforeSpawn = 0;
+	m_bApplyingDeferredName = false;
 }
 
 void CCSPlayer::OnKilled()
@@ -603,6 +609,30 @@ void CCSPlayer::OnConnect()
 	ResetVars();
 	ResetAllStats();
 	m_iUserID = GETPLAYERUSERID(BasePlayer()->edict());
+}
+
+// Whether an alive player is still allowed to change their name this life.
+// mp_max_alive_name_changes: <0 unlimited, 0 spawn-only, N allow N changes while alive.
+bool CCSPlayer::CanChangeNickname() const
+{
+#ifdef REGAMEDLL_ADD
+	int iMaxChanges = int(max_alive_name_changes.value);
+	if (iMaxChanges < 0)
+		return true;
+
+	return m_iNickChangesBeforeSpawn < iMaxChanges;
+#else
+	return true;
+#endif
+}
+
+void CCSPlayer::OnNicknameChanged()
+{
+	m_iNickChangesBeforeSpawn++;
+
+	// A counted change supersedes any pending deferred-name replay; without this
+	// re-applying the old pending name later would bypass the limit once for free
+	m_bApplyingDeferredName = false;
 }
 
 // Remember this amount of damage that we dealt for stats

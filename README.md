@@ -145,6 +145,7 @@ This means that plugins that do binary code analysis (Orpheu for example) probab
 | mp_stamina_restore_rate            | 0       | 0.0 | -            | Framerate (FPS), that used as reference when restoring stamina (fuser2) after jump. |
 | mp_flashlight_cooldown             | 0       | 0.0 | -            | Minimum delay in seconds before the flashlight can be switched on again (prevents spamming). Turning it off is always instant.<br/>`0` disabled (default behavior) |
 | mp_logkills                        | 1       | 0   | 1            | Log kills.<br/>`0` disabled <br/>`1` enabled |
+| mp_max_alive_name_changes          | -1      | -1  | -            | Number of name changes a player may make while alive, per life (anti-spam). Excess changes are deferred to respawn.<br/>`-1` unlimited (default behavior)<br/>`0` name changes only applied on respawn<br/>`N` allow N changes while alive |
 | mp_jump_height                     | 45      | 0.0 | -            | Player jump height. |
 | bot_excellent_morale               | 0       | 0   | 1            | Bots always have great morale regardless of defeat or victory. |
 | mp_randomspawn                     | 0       | 0   | 1            | Random player spawns<br/>`0` disabled <br/>`1` enabled<br/>`NOTE`: Navigation `maps/.nav` file required |
