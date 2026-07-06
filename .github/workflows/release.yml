@@ -284,6 +284,20 @@ jobs:
             UPSTREAM_DIFF="Upstream changes since \`${PREV_TAG}\`: https://github.com/rehlds/ReGameDLL_CS/compare/${PREV_BASE}...${BASE_SHORT}"
           fi
 
+          # Changelog covers only commits since the previous release. The release
+          # branch is force-pushed, so --cherry-pick drops rewritten but
+          # patch-identical commits; amended ones legitimately reappear. First
+          # release (or a deleted previous tag) falls back to all fork commits.
+          RANGE="origin/master..HEAD"
+          CHERRY=""
+          FULL_DIFF=""
+          if [ -n "$PREV_TAG" ] && git rev-parse -q --verify "refs/tags/${PREV_TAG}" >/dev/null; then
+            RANGE="${PREV_TAG}...HEAD"
+            CHERRY="--cherry-pick --right-only"
+            FULL_DIFF="**Full changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${{ github.ref_name }}"
+          fi
+          CHANGELOG=$(git log --no-merges $CHERRY --pretty='- %s [`%h`](https://github.com/${{ github.repository }}/commit/%H)' $RANGE)
+
           {
             echo "YaGameDLL — Yet Another GameDLL, a ReGameDLL_CS fork. Build \`${APP_VERSION}\` (commit [\`${GITHUB_SHA::7}\`](https://github.com/${{ github.repository }}/commit/${GITHUB_SHA}))."
             echo
@@ -296,7 +310,15 @@ jobs:
             echo "---"
             echo
             echo "### Changelog"
-            git log --no-merges --pretty='- %s [`%h`](https://github.com/${{ github.repository }}/commit/%H)' origin/master..HEAD
+            if [ -n "$CHANGELOG" ]; then
+              echo "$CHANGELOG"
+            else
+              echo "_No fork-side changes since \`${PREV_TAG}\`._"
+            fi
+            if [ -n "$FULL_DIFF" ]; then
+              echo
+              echo "$FULL_DIFF"
+            fi
           } > ../changelog.md
           cat ../changelog.md
 
