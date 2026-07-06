@@ -40,3 +40,12 @@
 *.sln             text eol=crlf
 *.vcxproj         text eol=crlf
 *.vcxproj.filters text eol=crlf
+
+###############################################################################
+# Keep repository service files out of source archives
+# (git archive / GitHub "Source code" release assets)
+###############################################################################
+.github           export-ignore
+.gitattributes    export-ignore
+.gitignore        export-ignore
+.editorconfig     export-ignore
