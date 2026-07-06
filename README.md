@@ -136,6 +136,7 @@ This means that plugins that do binary code analysis (Orpheu for example) probab
 | mp_votemap_min_time                | 180     | 0.0 | -            | Minimum seconds that must elapse on map before `votemap` command can be used. |
 | mp_flymove_method                  | 0       | 0   | 1            | Set the method used for flymove calculations.<br/> `0` default method<br/>`1` alternative method (more accurate) |
 | mp_stamina_restore_rate            | 0       | 0.0 | -            | Framerate (FPS), that used as reference when restoring stamina (fuser2) after jump. |
+| mp_flashlight_cooldown             | 0       | 0.0 | -            | Minimum delay in seconds before the flashlight can be switched on again (prevents spamming). Turning it off is always instant.<br/>`0` disabled (default behavior) |
 | mp_logkills                        | 1       | 0   | 1            | Log kills.<br/>`0` disabled <br/>`1` enabled |
 | mp_jump_height                     | 45      | 0.0 | -            | Player jump height. |
 | bot_excellent_morale               | 0       | 0   | 1            | Bots always have great morale regardless of defeat or victory. |

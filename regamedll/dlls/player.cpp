@@ -6763,9 +6763,24 @@ void EXT_FUNC CBasePlayer::__API_HOOK(ImpulseCommands)()
 		{
 			// temporary flashlight for level designers
 			if (FlashlightIsOn())
+			{
+				// turning the flashlight off is always allowed
 				FlashlightTurnOff();
+			}
 			else
+			{
+#ifdef REGAMEDLL_ADD
+				// rate-limit re-enabling to prevent flashlight spam
+				if (flashlight_cooldown.value > 0)
+				{
+					if (gpGlobals->time < m_flNextFlashlightToggle)
+						break;
+
+					m_flNextFlashlightToggle = gpGlobals->time + flashlight_cooldown.value;
+				}
+#endif
 				FlashlightTurnOn();
+			}
 
 			break;
 		}

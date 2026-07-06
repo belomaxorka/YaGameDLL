@@ -212,6 +212,7 @@ extern cvar_t vote_flags;
 extern cvar_t votemap_min_time;
 extern cvar_t flymove_method;
 extern cvar_t stamina_restore_rate;
+extern cvar_t flashlight_cooldown;
 extern cvar_t logkills;
 extern cvar_t randomspawn;
 extern cvar_t playerid_showhealth;

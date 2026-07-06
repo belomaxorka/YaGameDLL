@@ -192,6 +192,7 @@ cvar_t votemap_min_time        = { "mp_votemap_min_time", "180", 0, 180.0f, null
 
 cvar_t flymove_method          = { "mp_flymove_method", "0", 0, 0.0f, nullptr };
 cvar_t stamina_restore_rate    = { "mp_stamina_restore_rate", "0", 0, 0.f, nullptr };
+cvar_t flashlight_cooldown     = { "mp_flashlight_cooldown", "0", FCVAR_SERVER, 0.0f, nullptr };  // min delay in seconds before the flashlight can be switched on again (anti-spam); turning off is always instant
 
 cvar_t logkills                = { "mp_logkills", "1", FCVAR_SERVER, 0.0f, nullptr };
 cvar_t randomspawn             = { "mp_randomspawn", "0", FCVAR_SERVER, 0.0f, nullptr };
@@ -484,6 +485,7 @@ void EXT_FUNC GameDLLInit()
 	CVAR_REGISTER(&playerid_field);
 
 	CVAR_REGISTER(&stamina_restore_rate);
+	CVAR_REGISTER(&flashlight_cooldown);
 
 	CVAR_REGISTER(&flymove_method);
 
