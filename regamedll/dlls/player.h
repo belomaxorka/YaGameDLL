@@ -917,6 +917,8 @@ public:
 	MusicState m_musicState;
 	float m_flLastCommandTime[COMMANDS_TO_TRACK];
 
+	float m_flNextFlashlightToggle; // next time the flashlight is allowed to be switched on again (mp_flashlight_cooldown)
+
 #ifdef BUILD_LATEST
 	int m_iLastAccount;
 	int m_iLastClientHealth;
