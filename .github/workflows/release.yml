@@ -298,8 +298,10 @@ jobs:
           fi
           # Housekeeping commits are hidden: ones touching only docs/CI files
           # (pathspec) plus ci:/docs:/chore:-prefixed ones that reach other
-          # files (version scripts, configs)
-          CHANGELOG=$(git log --no-merges $CHERRY --pretty='- %s [`%h`](https://github.com/${{ github.repository }}/commit/%H)' $RANGE -- ':(exclude)*.md' ':(exclude).github' | grep -viE '^- (ci|docs|chore|build)[:+]' || true)
+          # files (version scripts, configs). ^origin/master keeps upstream
+          # commits pulled in by a base sync out of the fork changelog — they
+          # are covered by the upstream diff link instead.
+          CHANGELOG=$(git log --no-merges $CHERRY --pretty='- %s [`%h`](https://github.com/${{ github.repository }}/commit/%H)' $RANGE ^origin/master -- ':(exclude)*.md' ':(exclude).github' | grep -viE '^- (ci|docs|chore|build)[:+]' || true)
 
           {
             echo "YaGameDLL — Yet Another GameDLL, a ReGameDLL_CS fork. Build \`${APP_VERSION}\` (commit [\`${GITHUB_SHA::7}\`](https://github.com/${{ github.repository }}/commit/${GITHUB_SHA}))."
