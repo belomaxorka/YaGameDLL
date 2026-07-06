@@ -5,45 +5,36 @@ Versions read `<upstream base>+yagd.<N>`; binaries are on the
 [releases page](https://github.com/belomaxorka/YaGameDLL/releases). Upstream history is
 kept below in the original ReGameDLL_CS section.
 
-## [`5.30.0.814+yagd.33`](https://github.com/belomaxorka/YaGameDLL/releases/tag/v5.30.0.814-yagd.33) - 2026-07-07
+## [`5.30.0.814+yagd.39`](https://github.com/belomaxorka/YaGameDLL/releases/tag/v5.30.0.814-yagd.39) - 2026-07-07
 
-Upstream base: `5.30.0.814` — commit `781a68a` (2026-05-04), unchanged.
-
-### Added
-* New CVar: `mp_hostage_fear` — control CZ hostage fear reactions under `hostage_ai_enable 1`: `0` keeps hostages calm under gunfire, restoring 1.6-like behavior (related to upstream issue rehlds#1125)
-* New CVar: `mp_flashlight_cooldown` — minimum delay before the flashlight can be switched on again, anti-spam (upstream issue rehlds#56)
-* New CVar: `mp_max_alive_name_changes` — limit name changes per life while alive, excess deferred to respawn (upstream issue rehlds#38)
-
-### Fixed
-* `mp_forcerespawn` no longer spawns players without a team via the random-team menu slot when both teams are full (upstream issue rehlds#929)
-* Auto-team-select is denied when both teams are full instead of joining UNASSIGNED
-* VIP unable to receive/pick up the knife (regression from upstream PR rehlds#1045)
-* Unused variable warning (C4101) in `ggrenade.cpp` on builds with `REGAMEDLL_FIXES`
-
-### Infrastructure
-* Release notes: commit hashes are rendered as links and moved to the end of changelog lines, header separated with a rule
-* CI: apt downloads are retried to survive flaky mirrors
-
-## [`5.30.0.814+yagd.19`](https://github.com/belomaxorka/YaGameDLL/releases/tag/v5.30.0.814-yagd.19) - 2026-07-05
-
-Upstream base: `5.30.0.814` — commit `781a68a` (2026-05-04).
+Upstream base: `5.30.0.814` — commit `781a68a` (2026-05-04). First public release
+(consolidates the retired `yagd.19`/`yagd.33` pre-releases).
 
 ### Added
 * New CVar: `mp_knife_hit_detection` — aim-based knife hit validation (upstream issue rehlds#1154): rejects hull-assisted hits landing too far off the crosshair, allows hitting a target right below the attacker, pins impact effects (blood) to the victim's hull
 * New CVar: `mp_knife_wall_sparks` — spark effect when a knife hits a wall (upstream PR rehlds#1163)
 * New CVar: `mp_show_bomb_timer` — show the C4 countdown on the HUD round timer, incl. restoring the timer after the bomb explodes (upstream PR rehlds#1164)
 * New CVar: `mp_show_hintmessages` — block `#Hint_*` messages server-side (upstream PR rehlds#1166)
+* New CVar: `mp_hostage_fear` — control CZ hostage fear reactions under `hostage_ai_enable 1`: `0` keeps hostages calm under gunfire, restoring 1.6-like behavior (related to upstream issue rehlds#1125)
+* New CVar: `mp_flashlight_cooldown` — minimum delay before the flashlight can be switched on again, anti-spam (upstream issue rehlds#56)
+* New CVar: `mp_max_alive_name_changes` — limit name changes per life while alive, excess deferred to respawn (upstream issue rehlds#38)
 
 ### Fixed
 * Improved (CZ) hostage AI freezing after a map change when bots are disabled (upstream PR rehlds#1162)
 * Global buffer overflow in `SharedParse()` + unit test (upstream PR rehlds#1165)
 * Global buffer overflow in `PrioritizeAutoBuyString()`
+* `mp_forcerespawn` no longer spawns players without a team via the random-team menu slot when both teams are full (upstream issue rehlds#929)
+* Auto-team-select is denied when both teams are full instead of joining UNASSIGNED
+* VIP unable to receive/pick up the knife (regression from upstream PR rehlds#1045)
+* Unused variable warning (C4101) in `ggrenade.cpp` on builds with `REGAMEDLL_FIXES`
 * Docs: `sv_allchat` and `mp_ff_damage_reduction_other` defaults, documented `mp_chat_loc_fallback`
 
 ### Infrastructure
 * Fork versioning: `<upstream base>+yagd.<N>`, `-dev` mark only on non-release builds
 * Releases are built by CI from `v*` tags; dev builds (artifacts) on every push to `release`
-* Release notes state the exact upstream base and link the upstream diff since the previous release
+* Release notes: exact upstream base and upstream diff link, commit hashes as links at the end of changelog lines, changelog scoped to commits since the previous release, housekeeping (docs/CI) commits hidden
+* Repository service files (`.github`, dotfiles) excluded from source archives
+* CI: apt downloads are retried to survive flaky mirrors
 
 ---
 
