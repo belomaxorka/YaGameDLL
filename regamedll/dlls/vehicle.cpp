@@ -295,6 +295,12 @@ void CFuncVehicle::StopSound()
 	}
 
 	m_soundPlaying = 0;
+
+#ifdef REGAMEDLL_FIXES
+	// Let the engine loop restart on the very next think instead of waiting out
+	// the ~1s update throttle (e.g. hard braking / slamming into reverse).
+	m_flUpdateSound = -1;
+#endif
 }
 
 void CFuncVehicle::UpdateSound()
@@ -599,6 +605,13 @@ void CFuncVehicle::Next()
 		pev->avelocity = g_vecZero;
 		pev->velocity = g_vecZero;
 
+#ifdef REGAMEDLL_FIXES
+		// Silence the engine only when the vehicle is left unattended; while a
+		// driver is aboard keep it running so a stop mid-drive doesn't cut it off.
+		if (!m_pDriver)
+			StopSound();
+#endif
+
 		SetThink(&CFuncVehicle::Next);
 		NextThink(pev->ltime + time, TRUE);
 		return;
@@ -806,7 +819,12 @@ void CFuncVehicle::Find()
 	NextThink(pev->ltime + 0.1, FALSE);
 	SetThink(&CFuncVehicle::Next);
 	pev->speed = m_startSpeed;
-	UpdateSound();
+#ifdef REGAMEDLL_FIXES
+	// Only start the engine loop on spawn if the vehicle actually moves from
+	// the start; a parked (startspeed 0) vehicle would otherwise loop forever.
+	if (m_startSpeed != 0)
+#endif
+		UpdateSound();
 }
 
 void CFuncVehicle::NearestPath()
@@ -954,6 +972,10 @@ void CFuncVehicle::Restart()
 
 	UTIL_SetOrigin(pev, pev->oldorigin);
 	STOP_SOUND(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noise));
+#ifdef REGAMEDLL_FIXES
+	// Keep the flag in sync with the stopped sound so it can restart next round
+	m_soundPlaying = 0;
+#endif
 
 	NextThink(pev->ltime + 0.1f, FALSE);
 	SetThink(&CFuncVehicle::Find);
